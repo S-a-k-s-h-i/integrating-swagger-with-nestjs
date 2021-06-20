@@ -21,27 +21,24 @@ export class UserService {
     return this.userRepo.find();
   }
 
-  async findOne(id: string) {
+  async findOneUser(id: string):Promise<User> {
     const user = await this.userRepo.findOne(id);
-    console.log(user)
     if(!user) throw new NotFoundException("USER NOT FOUND");
     return user
 
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepo.findOne({id});
-    if(!user) throw new NotFoundException("USER NOT FOUND");
+    const user = await this.findOneUser(id);
     if(updateUserDto.age) user.age = updateUserDto.age;
     if(updateUserDto.isActive) user.isActive = updateUserDto.isActive;
 
     await this.userRepo.update({id:user.id},updateUserDto);
-    return {message:'USER_UPDATED_SUCCESSFULLY'}
+    return await this.findOneUser(id);
   }
 
   async remove(id: string) {
-    const user = await this.userRepo.findOne({id});
-    if(!user) throw new NotFoundException("USER NOT FOUND");
+    await this.findOneUser(id);
     try {
       await this.userRepo.delete({ id });
       return { deleted: true };

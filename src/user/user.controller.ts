@@ -30,7 +30,7 @@ export class UserController {
 
   @Get('/:id')
   async findById(@Param('id') id: string){
-    const data =await this.userService.findOne(id);
+    const data =await this.userService.findOneUser(id);
     return {
       statusCode: HttpStatus.OK,
       message: 'User fetched successfully',
@@ -40,10 +40,11 @@ export class UserController {
 
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    await this.userService.update(id, updateUserDto);
+    const data = await this.userService.update(id, updateUserDto);
     return {
       statusCode: HttpStatus.OK,
       message: 'User updated successfully',
+      data
     };
   }
 
